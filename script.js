@@ -1,10 +1,10 @@
 (() => {
   'use strict';
 
-  /* ---------- Config ---------- */
-  const PROGRESS_KEY = 'bookLibrary.progress.v1'; // your bookmarks and last pages
 
-  /* ---------- Helpers ---------- */
+  const PROGRESS_KEY = 'bookLibrary.progress.v1'; 
+
+
   const $ = (sel) => document.querySelector(sel);
   const el = {
     shelves: $('#shelves'), syncInfo: $('#syncInfo'),
@@ -32,8 +32,6 @@
     toastTimer = setTimeout(() => el.toast.classList.remove('show'), 3200);
   }
 
-  /* ---------- Library from books.js ---------- */
-  // The key that saved progress is stored under: the Drive file id when the link has one.
   const keyFor = (link) => {
     const m = link.match(/\/d\/([\w-]+)/) || link.match(/[?&]id=([\w-]+)/);
     return m ? m[1] : link;
@@ -45,7 +43,7 @@
     (Array.isArray(list) ? list : []).forEach((item) => {
       const title = String(item?.title || '').trim();
       const link = String(item?.link || '').trim();
-      if (!title || !/^https?:\/\//i.test(link)) return; // skip incomplete entries
+      if (!title || !/^https?:\/\//i.test(link)) return; 
       const key = keyFor(link);
       if (seen.has(key)) return;
       seen.add(key);
@@ -64,13 +62,13 @@
       a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }));
   }
 
-  /* ---------- State ---------- */
+
   const catalog = buildCatalog(window.BOOKS);
   const defaultTotals = Object.fromEntries(catalog.map((b) => [b.path, b.pages]));
-  let progress = readJson(PROGRESS_KEY, {});      // { [key]: { bookmarked, page, total, finished } }
+  let progress = readJson(PROGRESS_KEY, {});      
   const view = { folder: '', query: '', filter: 'All' };
 
-  /* ---------- Reading progress ---------- */
+
   const getP = (path) => ({ total: defaultTotals[path] || 0, ...(progress[path] || {}) });
 
   function setP(path, patch) {
@@ -94,7 +92,7 @@
 
   const percent = (p) => (p.finished ? 100 : p.total > 0 ? Math.min(100, ((p.page || 0) / p.total) * 100) : 0);
 
-  /* ---------- Filtering ---------- */
+ 
   function visibleBooks() {
     const q = view.query.trim().toLowerCase();
     return catalog.filter((b) => {
@@ -106,7 +104,7 @@
     });
   }
 
-  /* ---------- Rendering ---------- */
+  
   function render() {
     renderStats();
     renderShelves();
@@ -132,7 +130,7 @@
     });
     const count = (f) => catalog.filter((b) => b.folder === f || b.folder.startsWith(f + '/')).length;
 
-    // Show a shelf's subfolders only while that shelf is open.
+    
     const openTop = view.folder.split('/')[0];
     const rows = [...folders]
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
@@ -200,7 +198,7 @@
       </li>`;
   }
 
-  /* ---------- Events ---------- */
+  
   el.shelves.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-folder]');
     if (!btn) return;
@@ -227,7 +225,7 @@
     render();
   });
 
-  // Saving a page number updates this row in place so typing is not interrupted.
+  
   el.list.addEventListener('change', (e) => {
     const field = e.target.dataset.field;
     if (!field) return;
@@ -252,6 +250,6 @@
     toast(field === 'page' ? `Saved: page ${value}.` : 'Saved.');
   });
 
-  /* ---------- Start ---------- */
+  
   render();
 })();
