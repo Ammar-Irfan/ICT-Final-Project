@@ -221,21 +221,5 @@ input:focus, select:focus {
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-@media (max-width: 860px) {
-  .layout { grid-template-columns: 1fr; }
-  .panel { position: static; }
-}
-
-@media (max-width: 520px) {
-  .toolbar { flex-direction: column; }
-  .toolbar select { width: 100%; }
-  .stats { gap: 1.5rem; }
-  .book__actions { margin-left: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
-}
-
 .link { color: var(--sky-800); font-weight: 500; text-underline-offset: 3px; }
 .link:hover { color: var(--sky-600); }
